@@ -124,8 +124,7 @@ The columns Z_Revenue and Z_Cost were dropped due to uncertainty about what they
 Food_Data<-Food_Data %>% 
   select(-Z_Cos, -Z_Rev)
 ```
-
-## Remove Duplicates and check for missing values: This reduced the data from 2205 to 2021.
+Remove Duplicates and check for missing values: This reduced the data from 2205 to 2021.
 ```R
 1. Food_Data<-Food_Data %>% 
   distinct() 
@@ -133,7 +132,7 @@ Food_Data<-Food_Data %>%
 2. colSums(is.na(Food_Data))
 
 ```
-### The household income was reviewed, total, average, and standard deviations the  
+The household income was reviewed, total, average, and standard deviations the  
 
 ```R
 Household_Income <- Food_Data %>% 
@@ -151,7 +150,7 @@ Household_Income <- Food_Data %>%
 | Fish         | 75,997       | 37.60          | 54.89              |
 
 
-## Analysis on each product was conducted as well to understand the sales pattern, most sold, least sold and distribution:
+Analysis on each product was conducted as well to understand the sales pattern, most sold, least sold and distribution:
 ```R
 Wine_Sales<- Food_Data %>% 
   summarise(Total_Amt_Spent = sum(Wine_Sales), Avg_Amt_spent = mean(Wine_Sales), Sales_COunt = n(), SD = sd(Wine_Sales), Med = median(Wine_Sales))
