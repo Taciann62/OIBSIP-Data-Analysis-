@@ -178,8 +178,8 @@ Result:
 
 ### Understanding K-Means and application.
 
-K-means, in basic terms, is a process that enables analysts to segment data into groups of clusters based on specific similarities that are crucial to understanding customer behaviour. To determine who the High, Mid, and Low spenders are based on their purchase patterns and preferences.
-- Step 1: In applying this process, I selected key fields necessary to get insight into this data, columns like Household Income, Age, Total Amount Spent, Products sold, etc, as seen in the syntax below:
+K-means, in basic terms, is a process that enables analysts to segment data into groups of clusters based on specific similarities that are crucial to understanding customer behaviour. To determine who the High, Mid, and Low spenders are based on their purchase patterns and preferences. 
+- Step 1: In applying this process, I selected key fields necessary to get insight into this data. K-means clustering was performed using Household Income, Total Amount Spent, product-level spend variables, purchase channel counts, and customer age. Household Income, Age, Total Amount Spent, Products sold, etc, as seen in the syntax below:
 ```R
   Foodclustered_data <- Food_Data %>%
   select(Household_income, Total_Amt, Fish_Sales, Wine_Sales, Meat_Sales, Gold_Sales,
@@ -199,18 +199,100 @@ wss<-sapply(1:10, function(k){kmeans(FoodScaled_data, k, nstart = 20)$tot.within
 
 plot(1:10, wss, type ="b", pch = 19, frame = FALSE, xlab = "Number of Clusters K", ylab = "Total within-cluster sum of squares" )
 ```
+Result: 
+<img width="1366" height="768" alt="Screenshot (81)" src="https://github.com/user-attachments/assets/ceb4bcef-b540-4584-a4ec-4a9779ca3928" />
+From the result, the elbow section count is 3, which is the number we will be entering in the centers in the syntax below: 
+```R
+set.seed(123)
+Clustred_result<- kmeans(FoodScaled_data, centers = 3, nstart = 25)
+```
+Result:
+<img width="1366" height="768" alt="Screenshot (87)" src="https://github.com/user-attachments/assets/2d9ccf16-ae7b-435e-88f1-9cfe7bcbc1b3" />
+I proceeded to view the size of the clusters, and the grouping clearly revealed the customers based on three segments, which were determined by their spending level and income. 
+Clustred_result$size
+[1] 932 531 558
+
+After this was done, the column was created with the Column name, clusters, records, 1,2,3. Following this segmentation, the clusters were added back to the clustered data set from earlier.
+
+```R
+Foodclustered_data <- Foodclustered_data %>% 
+  mutate(Cluster = as.factor(Clustred_result$cluster))
+```
+
+Further analysis was performed on the clusters to determine average income, expenditure, product sales, purchasing preference, and age.
+
+```R
+Food_Analysis <- Foodclustered_data %>%
+  group_by(Cluster) %>% 
+  summarise(Sales_count = n(),
+            Avg_Income = mean(Household_income),
+            Avg_Total_Spend = mean(Total_Amt),
+            Avg_Wine = mean(Wine_Sales),
+            Avg_Sweet = mean(Sweet_Sales),
+            Avg_Fruit = mean(Fruits_Sales),
+            Avg_Fish = mean(Fish_Sales),
+            Avg_web_purchase = mean(Web_Purchases),
+            Avg_Discount = mean(Discounted_Purchase),
+            Avg_Catalogue = mean(Catalogue_Purchases),
+            Avg_Instore = mean(In_Store_Purchase),
+            Avg_Age = mean(Cust_Age),
+            Avg_Meat = mean(Meat_Sales))
+```
+
+But for clarity, it was necessary to properly label the result of the three records provided. 
+```R
+Food_Analysis <- Food_Analysis %>% 
+  mutate(Cluster_Level = case_when(Cluster == 2 ~"High_Spenders", Cluster == 3 ~"Mid_Spenders", Cluster == 1 ~"Low_Spenders", TRUE    ~"Unknown"))
+```
+
+Following this segmentation and data clarity, the clusters were added back to the clustered data set from earlier.
+
+```R
+Foodclustered_data <- Foodclustered_data %>%
+  left_join(Food_Analysis %>% select(Cluster, Cluster_Level), by = "Cluster")
+```
+
+After the customers were adequately segmented, I proceeded to visualize the data on R Studio using ggplot, as seen below:
+```R
+Foodclustered_data %>% 
+  group_by(Cluster_Level) %>% 
+  summarise(across(c(Wine_Sales, Meat_Sales, Sweet_Sales, Fish_Sales, Fruits_Sales, Gold_Sales,
+                     Web_Purchases, In_Store_Purchase, Discounted_Purchase, Catalogue_Purchases), mean))%>%
+  pivot_longer(-Cluster_Level, names_to = "Metric", values_to = "Average") %>% 
+  ggplot(aes(x=Cluster_Level, y = Average, fill = Metric)) + geom_col(position = "dodge")+
+  theme_light() + labs(title = "AVerage Spending Patterns per CLuster")
+
+
+ggplot(Foodclustered_data, aes(x = Household_income, fill = Cluster_Level)) +
+  geom_histogram(bins = 30, alpha = 0.7, color = "white") +
+  facet_wrap(~Cluster_Level) +
+  theme_minimal() +
+  labs(title = "Income Distribution per Segment",
+       x = "Household Income",
+       y = "Number of Customers") +
+  scale_fill_brewer(palette = "Set1")
+
+ggplot(Foodclustered_data, aes(x = Cust_Age, fill = Cluster_Level)) +
+  geom_histogram(bins = 30, alpha = 0.7, color = "white") +
+  facet_wrap(~Cluster_Level) +
+  theme_minimal() +
+  labs(title = "Income Distribution per Segment",
+       x = "Household Income",
+       y = "Number of Customers") +
+  scale_fill_brewer(palette = "Set1")
+```
+
+
+
+
+## Exploratory Data Analytics
 
 
 
 
 
 
-
-
-
-
-
-| Expenditure Level | Total Spent | Average Spent | Total Income | Average Income | Purchasing Frquency|
+| Expenditure Level | Total Spent | Average Spent | Total Income | Average Income | Number of Customers|
 |-------------------|--------------|----------------|------------|----------------|--------------------|
 | High Spenders     | 740,380      | 1394.31        | 40,248,665 | 75,798         | 531                |
 | Mid Spenders      | 398,543      | 714.23         | 32,104,882 | 57,536         | 558                |
