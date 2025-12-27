@@ -2,7 +2,7 @@
 
 ## Intorduction
 This data analytics project was completed as part of the Oasis Infobyte internship program (December Batch 2025). The team provided the data through an open-source data platform, Kaggle. 
-It contains a hosting record of various Airbnb hosts in three neighborhood groups in Newyork namely: Queens, Staten Island, Manhattan, Brooklyn, and Bronx. 
+It contains a hosting record of various Airbnb hosts in five neighborhood groups in New york namely: Queens, Staten Island, Manhattan, Brooklyn, and Bronx. 
 The data contained key information such as booking prices, minimum nights spent, hostid, reviews etc, with which the analysis will be guided. However, the objective of this data is to
 clean, structure, detect outliers, and analyse. 
 
@@ -18,7 +18,7 @@ uniqueness.
 performance.
 
 ## My Role
-On this project, I assume the role of the data analyst to uncover these insights, provide recommendations that influence decision-making, and apply K-means to create clusters and segment the customers effectively.
+On this project, I assume the role of the data analyst to uncover these insights, provide recommendations that influence decision-making, and apply also segment the reviews effectively.
 As a Junior Data Analyst, the interquartile range (IQR) will be used to detect and cap skewed data (outliers).
 
 ### Tool
