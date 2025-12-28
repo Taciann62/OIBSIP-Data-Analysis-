@@ -4,7 +4,7 @@
 
 ## Introduction
 
-This data analytics project was completed as part of the Oasis Infobyte internship program (December Batch 2025).
+This data analytics project was completed as part of the Oasis Infobyte internship program requirements (December Batch 2025).
 The data was provided by the team through an open-source data platform, Kaggle. It contains a sales record of a retail store from 2023, alongside key fields such as Customer Gender, Product Name, Age, Product type, and the amount and Quantity purchased by each customer.
 
 ### Project Overview
