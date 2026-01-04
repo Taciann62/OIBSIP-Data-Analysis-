@@ -1,12 +1,11 @@
-## ================================
-## DATA PREVIEW
-## ================================
+## Introduction
+```
 library(tidyverse)
 library(skimr)
 library(janitor)
 library(ggcorrplot)
 library(car)
-
+```
 View(Housing)
 colSums(is.na(Housing))
 
